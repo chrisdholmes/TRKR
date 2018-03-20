@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">TRKR</string>
+    <string name="before">Before</string>
+    <string name="mood">mood</string>
+    <string name="submit">SUBMIT</string>
+    <string name="after">After</string>
+    <string name="incident">Incident</string>
+    <string name="memory">Memory</string>
+</resources>
