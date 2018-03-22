@@ -8,20 +8,32 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+/**
+ * This is the primary Menu for the application.
+ * It provides the user with two Buttons.
+ * One titled store will allow a user to store a memory and the moods before and after the memory.
+ * The other titled Display will allow a user to Load stored memories.
+ */
 public class TRKR extends AppCompatActivity implements View.OnClickListener
 {
-    private Intent i;
-    private EditText splashPwd;
-    private Button splashButton;
+    private Intent iMoodTRKR;
+    private Intent iDisplayTRKR;
+    private Button displayButton;
+    private Button storeButton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trkr);
-        i = new Intent(getApplicationContext(), MoodTRKR.class);
-        splashPwd = findViewById(R.id.splashedx);
-        splashButton = findViewById(R.id.splashbtn);
+        //intent object for the saving activity
+        iMoodTRKR = new Intent(getApplicationContext(), MoodTRKR.class);
+        //intent object for the displaying activity
+        iDisplayTRKR = new Intent(getApplicationContext(), DisplayTRKR.class);
+
+        displayButton = findViewById(R.id.displaybtn);
+        storeButton = findViewById(R.id.storebtn);
 
     }
 
@@ -30,29 +42,16 @@ public class TRKR extends AppCompatActivity implements View.OnClickListener
     {
         switch(v.getId())
         {
-            case R.id.splashbtn:
-                String password = splashPwd.getText().toString();
-                if(password.equals(null))
-                {
-                    Toast toast = Toast.makeText(this.getApplicationContext(),
-                            "Please enter password",
-                            Toast.LENGTH_SHORT);
-                    toast.show();
-                }
-                else if(password.equals("margarette516") || password.equals("mg516"))
-                {
-                    startActivity(i);
-                    finish();
-                }
-                else
-                {
-                    Toast toast = Toast.makeText(this.getApplicationContext(),
-                            "Bad password",
-                            Toast.LENGTH_SHORT);
-                    toast.show();
-                }
-
-
+            //Opens display Activity and then closes
+            case R.id.displaybtn:
+                startActivity(iDisplayTRKR);
+                finish();
+                break;
+            //Open saving Activity and then closes
+            case R.id.storebtn:
+                startActivity(iMoodTRKR);
+                finish();
+                break;
         }
     }
 }

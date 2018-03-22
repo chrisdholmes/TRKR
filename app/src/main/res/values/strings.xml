@@ -6,4 +6,8 @@
     <string name="after">After</string>
     <string name="incident">Incident</string>
     <string name="memory">Memory</string>
+    <string name="load_button">LOAD</string>
+    <string name="display">DISPLAY</string>
+    <string name="store">STORE</string>
+    <string name="clear">CLEAR</string>
 </resources>

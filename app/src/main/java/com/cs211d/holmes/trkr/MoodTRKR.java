@@ -1,52 +1,46 @@
 package com.cs211d.holmes.trkr;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.database.sqlite.SQLiteDatabase;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.ArrayList;
+import android.widget.TextView;
 
 /**
- * Created by root on 3/14/18.
+ * This Activity is designed to store memories a user enters
+ * into a sqlite database. It three Strings called before, after,
+ * and incident which are all moments associated with a memory.
+ *
  */
 
 public class MoodTRKR extends AppCompatActivity implements View.OnClickListener
 {
-    Spinner before;
-    Spinner after;
-    EditText incident;
-    SQLiteDatabase trkrDB;
-    TextView verification;
+    private Spinner before;
+    private Spinner after;
+    private EditText incident;
+    private static final String TAG = "MoodTRKR: ";
+    private TextView verification;
+    private Intent iSplash;
 
     public void onCreate(Bundle b)
     {
         super.onCreate(b);
         setContentView(R.layout.mood_trkr_activity);
 
+        //Next three variables store three Strings for saving into Databases
         before = findViewById(R.id.beforesp);
         after = findViewById(R.id.aftersp);
         incident = findViewById(R.id.incidentedx);
+
+        //verification is for informing the user the submission was successful
         verification = findViewById(R.id.verification);
-        trkrDB = openOrCreateDatabase("mooddb.db",
-                Context.MODE_PRIVATE, null);
 
-        String sqlcmd = "CREATE TABLE IF NOT EXISTS INFO(" +
-                "id integer auto_increment," +
-                "before text NOT NULL," +
-                "after text NOT NULL," +
-                "incident text);";
-        trkrDB.execSQL(sqlcmd);
-
-
+        iSplash = new Intent(getApplicationContext(), TRKR.class);
     }
     @Override
     public void onClick(View v)
@@ -54,48 +48,30 @@ public class MoodTRKR extends AppCompatActivity implements View.OnClickListener
         switch(v.getId())
         {
             case R.id.submitbtn:
-                String beforeDATA = before.getSelectedItem().toString();
-                String afterDATA = after.getSelectedItem().toString();
-                String incidentDATA = incident.getText().toString();
-
-                if(incidentDATA.equals(null)){
-                    Log.d("DEBUG: ", "INCIDENT CAN NOT BE NULL");
-                }
-
-                ContentValues cv = new ContentValues();
-
-                cv.put("before",beforeDATA);
-                cv.put("after",afterDATA);
-                cv.put("incident",incidentDATA);
-
-                long recNum = trkrDB.insertOrThrow("info",null,cv);
-
-                Log.d("DEBUG:","recNum = " + recNum + " data submission successful");
-
-                verification.setText("Submitted");
-
-                retrieveMood();
-
-
+                storeMood();
+                break;
         }
     }
-    public void retrieveMood()
-    {
-        Cursor c = trkrDB.query("info",null, null,
-                null, null, null, null, null);
-        int cCount = c.getColumnCount();
 
-        ArrayList<String> mood = new ArrayList<>();
-        if (c != null)
-            for(c.moveToFirst(); !c.isAfterLast(); c.moveToNext())
-            {
-               int i = 1;
-               while(i < c.getColumnCount()){
-                   Log.d(c.getColumnName(i),c.getString(i) + " test");
-                   i++;
-               }
-            }
+    @Override
+    public void onBackPressed() {
+        startActivity(iSplash);
+        finish();
+    }
 
+    public void storeMood(){
+        String beforeDATA = before.getSelectedItem().toString();
+        String afterDATA = after.getSelectedItem().toString();
+        String incidentDATA = incident.getText().toString();
+
+
+        Log.d(TAG, beforeDATA + " " + afterDATA + " " + incidentDATA);
+
+        MoodDataBaseHelper mdbh = MoodDataBaseHelper.getInstance(this);
+
+        mdbh.insertMood(beforeDATA, incidentDATA, afterDATA);
+
+        verification.setText("Submitted");
     }
 
 }
